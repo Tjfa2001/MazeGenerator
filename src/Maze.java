@@ -5,31 +5,28 @@ import java.util.Random;
 public class Maze {
 	
 	// Number of rows and cells in maze
-	int numRows;
-	int numCols;
+	private int numRows;
+	private int numCols;
 	
 	// GUI of the maze
-	Frame gui;
+	private Frame gui;
 	
 	// 2D Array of Maze Cells
-	MazeCell[][] cells;
+	private MazeCell[][] cells;
 	
 	// ArrayList for later use
-	ArrayList<MazeCell> borderCells;
+	private ArrayList<MazeCell> borderCells;
 	
 	// Random number generator
-	Random random;
+	private Random random;
 	
 	public Maze() {
 		gui = createGUI();
 		setUpVariables();
-		try {
-			generateMaze();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		generateMaze();
 	}
 	
+	// Sets up variables
 	public void setUpVariables() {
 		this.cells = gui.panel.getCells();
 		this.numRows = Settings.ROWS_OF_CELLS;
@@ -37,53 +34,67 @@ public class Maze {
 		this.random = new Random();
 	}
 	
+	// Creates the maze GUI
 	public Frame createGUI() {
 		return new Frame();
 	}
 	
-	public void generateMaze() throws InterruptedException {
-		// Pick a starting square 
-		borderCells = new ArrayList<MazeCell>();
+	// Generates a new maze using Prim's Algorithm
+	public void generateMaze() {
 		
+		// Intialise list of bordering squares
+		this.borderCells = new ArrayList<MazeCell>();
+		
+		// Pick a starting square 
 		MazeCell startingCell = pickStartingCell();
-
 		startingCell.setStartingCell();
 		
+		// Get the bordering cells for the starting cell
 		getBorderingCells(startingCell);
-		
-		// Make a (list?) of all of the squares bordering the maze currently
-		
+
 		// While the list is not empty
-		while(!borderCells.isEmpty()) {
-	
+		while(!this.borderCells.isEmpty()) {
+	        
+			// Pick a random bordering cell
 			int newCellIndex = pickRandomBorderCellIndex();
+			MazeCell newCell = this.borderCells.get(newCellIndex);
 			
-			MazeCell newCell = borderCells.get(newCellIndex);
+			// Add the cell to the maze and remove it from the list of bordering cells
 			newCell.setInMaze();
-			borderCells.remove(newCellIndex);
+			this.borderCells.remove(newCellIndex);
 			
+			// Pick another random border cell
 			getRandBordMazeCell(newCell);
 			
-			Thread.sleep(10);
-
+			// Sleep for aesthetics
+			try {Thread.sleep(10);} catch (InterruptedException e) {e.printStackTrace();}
+            
+			// Get the bordering cells for this new cell
 			getBorderingCells(newCell);
+			
+			// If there are no more border cells, set the new cell to be the final square
 			if(this.borderCells.isEmpty()) {
 				newCell.setEndCell();
 			}
 		}
 		
-		System.out.println("end");
-		
 	}
 	
 	// Retrieves a random, bordering maze cell
 	private void getRandBordMazeCell(MazeCell newCell) {
+		
+		// Finds the bordering maze tiles
 		ArrayList<MazeCell> borderingMazeTiles = findBorderingMaze(newCell);
-			
-			int mazeIndex = pickRandomMazeCellIndex(borderingMazeTiles);
-			MazeCell mazeCellToJoinTo = borderingMazeTiles.get(mazeIndex);
-			joinCells(newCell,mazeCellToJoinTo);
-			borderingMazeTiles.clear();
+		
+		// Pick a random one
+		int mazeIndex = pickRandomMazeCellIndex(borderingMazeTiles);
+		
+		// Join this cell to the maze
+		MazeCell mazeCellToJoinTo = borderingMazeTiles.get(mazeIndex);
+		joinCells(newCell,mazeCellToJoinTo);
+		
+		// Clear the list
+		borderingMazeTiles.clear();
 	}
 	
 	// Joins the border cell to a maze cell
@@ -184,7 +195,7 @@ public class Maze {
 	
 	// Picks a random border cell index
 	public int pickRandomBorderCellIndex() {
-		return random.nextInt(borderCells.size());
+		return random.nextInt(this.borderCells.size());
 	}
 	
 	// Finds the bordering cells next to a maze cell
@@ -225,7 +236,7 @@ public class Maze {
 		boolean CellInBorder = checkIfInBorder(cell);
 		
 		if(!CellInMaze && !CellInBorder) {
-			borderCells.add(cell);
+			this.borderCells.add(cell);
 			cell.setInBorder();
 			cell.setBackground(Color.MAGENTA);
 		}
@@ -239,5 +250,10 @@ public class Maze {
 	// Checks if a cell is bordering the maze
 	public boolean checkIfInBorder(MazeCell cell) {
 		return cell.isInBorder();
+	}
+	
+	// Returns the array representation of the maze
+	public MazeCell[][] getCells(){
+		return this.cells;
 	}
 }

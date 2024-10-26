@@ -17,6 +17,9 @@ public class Settings {
 	public final static Color STARTING_COLOUR = Color.PINK;
 	public final static Color STARTING_CELL_COLOUR = Color.GREEN;
 	public final static Color ENDING_CELL_COLOUR = Color.red;
-
+	public final static Color VISITING_COLOUR = Color.cyan;
+	public final static Color SOLUTION_COLOUR = Color.magenta;
+	public final static Color CURRENTLY_CORRECT_COLOUR = Color.yellow;
+	public final static Color CHECKED_COLOUR = Color.orange;
 
 }

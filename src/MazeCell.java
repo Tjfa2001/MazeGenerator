@@ -8,9 +8,10 @@ import javax.swing.JPanel;
 
 public class MazeCell extends JPanel {
 	
+	private static final long serialVersionUID = 1L;
 	// Row and column index of maze cell in BasePanel
-	int rowIndex;
-	int colIndex;
+	public int rowIndex;
+	public int colIndex;
 	
 	// Width and height of maze cell and the width of walls between them
 	int width;
@@ -18,15 +19,18 @@ public class MazeCell extends JPanel {
 	int wallWidth;
 	
 	// Colour settings
-	Color wallColour;
-	Color mazeColour;
-	Color startingColour;
-	Color startCellColour;
-	Color endCellColour;
+	private Color wallColour;
+	private Color mazeColour;
+	private Color startingColour;
+	private Color startCellColour;
+	private Color endCellColour;
 	
 	// State of maze cell
 	boolean isInMaze = false;
 	boolean isInBorder = false;
+	boolean isStartCell = false;
+	boolean isEndCell = false;
+	boolean visited = false;
 	
 	// Whether cell has these walls or not
 	boolean topWall = true;
@@ -83,19 +87,34 @@ public class MazeCell extends JPanel {
 	// Changes state of cell to signify it is now in the maze
 	public void setInMaze() {
 		this.isInMaze = true;
-		removeFromBorder();
 		this.setBackground(this.mazeColour);
+		
+		// Removes it from the bordering cells
+		removeFromBorder();
 	}
 	
 	// Changes state of cell to starting cell
 	public void setStartingCell() {
 		this.isInMaze = true;
+		this.isStartCell = true;
 		this.setBackground(this.startCellColour);
 	}
 	
+	// Returns whether the cell is the starting cell
+	public boolean isStartingCell() {
+		return this.isStartCell;
+	}
+	
+	// Sets the cell to be the end cell
 	public void setEndCell() {
 		this.isInMaze = true;
+		this.isEndCell = true;
 		this.setBackground(this.endCellColour);
+	}
+	
+	// Returns whether the cell is the end cell
+	public boolean isEndCell() {
+		return this.isEndCell;
 	}
 	
 	// Returns whether the cell is in the maze
@@ -106,6 +125,7 @@ public class MazeCell extends JPanel {
 	@Override
     protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
+		// Casts the graphics to Graphics2D object
 		Graphics2D g2d = (Graphics2D) g;
 		
 		adjustWallSettings(g2d);
@@ -125,40 +145,50 @@ public class MazeCell extends JPanel {
 		repaint();
 	}
 	
+	// Adjusts the wall settings
 	private void adjustWallSettings(Graphics2D g2d) {
 		g2d.setStroke(new BasicStroke(this.wallWidth));
 		g2d.setColor(this.wallColour);
 	}
 	
+	// Draws the left wall onto the mazecell
 	private void drawLeftWall(Graphics g) {
 		g.drawLine(0, 0, 0, this.height);
 	}
 	
-	private void drawRightWall(Graphics g) {
-		g.drawLine(this.width-this.wallWidth, 0, this.width-this.wallWidth, this.height);
-	}
-	
-	private void drawTopWall(Graphics g) {
-		g.drawLine(0, 0, this.width, 0);
-	}
-	
-	private void drawBottomWall(Graphics g) {
-		g.drawLine(0, this.height-this.wallWidth, this.width, this.height-this.wallWidth);
-	}
-	
-	public void removeTopWall() {
-		this.topWall = false;
-	}
-	
-	public void removeBottomWall() {
-		this.bottomWall = false;
-	}
-	
+	// Removes the left wall of the mazecell
 	public void removeLeftWall() {
 		this.leftWall = false;
 	}
 	
+	// Draws the right wall onto the mazecell
+	private void drawRightWall(Graphics g) {
+		g.drawLine(this.width-this.wallWidth, 0, this.width-this.wallWidth, this.height);
+	}
+	
+	// Removes the right wall of the mazecell
 	public void removeRightWall() {
 		this.rightWall = false;
 	}
+	
+	// Draws the top wall onto the mazecell
+	private void drawTopWall(Graphics g) {
+		g.drawLine(0, 0, this.width, 0);
+	}
+	
+	// Removes the top wall of the mazecell
+	public void removeTopWall() {
+		this.topWall = false;
+	}
+	
+	// Draws the bottom wall onto the mazecell
+	private void drawBottomWall(Graphics g) {
+		g.drawLine(0, this.height-this.wallWidth, this.width, this.height-this.wallWidth);
+	}
+	
+	// Removes the bottom wall of the mazecell
+	public void removeBottomWall() {
+		this.bottomWall = false;
+	}
+		
 }

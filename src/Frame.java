@@ -3,6 +3,10 @@ import javax.swing.JFrame;
 
 public class Frame extends JFrame{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	int frameWidth;
 	int frameHeight;
 	BasePanel panel;
@@ -26,6 +30,7 @@ public class Frame extends JFrame{
 		this.setResizable(false);
 		this.setSize(new Dimension(frameWidth,frameHeight));
 		this.setDefaultCloseOperation(Frame.EXIT_ON_CLOSE);
+		this.setTitle("Maze!");
 	}
 	
 	// Retrieves settings from the Settings class
